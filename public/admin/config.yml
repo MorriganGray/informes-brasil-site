@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main # O ramo principal do seu repositório
+
+media_folder: "public/images/uploads" # Onde as imagens das notícias serão guardadas
+public_folder: "/images/uploads" # Como o site irá aceder a essas imagens
+
+collections:
+  - name: "noticias" # O nome da nossa coleção de conteúdo
+    label: "Notícias" # Como aparecerá no painel
+    folder: "_noticias" # A pasta onde os ficheiros serão guardados
+    create: true # Permitir a criação de novas notícias
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Como o nome do ficheiro será gerado
+    fields: # Os campos do nosso formulário de notícias
+      - { label: "Título", name: "Title", widget: "string" }
+      - { label: "Data de Publicação", name: "Date", widget: "datetime" }
+      - { label: "Categoria", name: "Category", widget: "string", required: false }
+      - { label: "Imagem de Destaque", name: "Image", widget: "image" }
+      - { label: "Corpo da Notícia", name: "body", widget: "markdown" }
