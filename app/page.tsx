@@ -1,23 +1,45 @@
 // Importações de componentes e da função de busca de dados
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSortedNoticiasData } from '../lib/noticias'; // Ajuste o caminho se necessário
 import SiteHeader from './components/SiteHeader'; // Importa o novo Header
 import SiteFooter from './components/SiteFooter'; // Importa o novo Footer
+import { db } from '../lib/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 // A interface pode ser movida para um ficheiro de tipos (e.g., types.ts) se preferir
 interface Noticia {
   id: string;
   Title: string;
-  Date: string;
+  Date: {
+    seconds: number;
+    nanoseconds: number;
+  };
   Category?: string;
-  Image: string;
+  ImageURL: string;
 }
+
+// Função para buscar notícias do Firebase
+async function getNoticiasFromFirestore(): Promise<Noticia[]> {
+  try {
+    const noticiasCol = collection(db, 'noticias');
+    const q = query(noticiasCol, orderBy('Date', 'desc'));
+    const noticiaSnapshot = await getDocs(q);
+    const noticiasList = noticiaSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Noticia[];
+    return noticiasList;
+  } catch (error) {
+    console.error("Error fetching news from Firestore: ", error);
+    return []; // Retorna um array vazio em caso de erro
+  }
+}
+
 
 // A página principal é um Server Component assíncrono
 export default async function Home() {
   // Busca os dados no servidor durante a renderização
-  const allNoticiasData: Noticia[] = getSortedNoticiasData();
+  const allNoticiasData = await getNoticiasFromFirestore();
 
   // Lógica para separar as notícias em destaques
   const noticiaDestaque = allNoticiasData.length > 0 ? allNoticiasData[0] : null;
@@ -46,7 +68,7 @@ export default async function Home() {
                       {noticiaDestaque && (
                         <div className="lg:col-span-2 h-[30rem] lg:h-[36rem] relative rounded-xl overflow-hidden group shadow-2xl">
                             <Image 
-                              src={noticiaDestaque.Image} 
+                              src={noticiaDestaque.ImageURL} 
                               alt={noticiaDestaque.Title}
                               fill
                               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -66,7 +88,7 @@ export default async function Home() {
                         {destaquesSecundarios.map((noticia) => (
                           <div key={noticia.id} className="h-full min-h-[16rem] relative rounded-xl overflow-hidden group shadow-xl">
                               <Image 
-                                src={noticia.Image} 
+                                src={noticia.ImageURL} 
                                 alt={noticia.Title}
                                 fill
                                 className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -90,7 +112,7 @@ export default async function Home() {
                         <div key={noticia.id} className="bg-brand-white rounded-xl overflow-hidden group transition-all duration-300 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-1 border-2 border-transparent hover:border-brand-blue">
                             <div className="relative h-52 w-full">
                                 <Image 
-                                  src={noticia.Image} 
+                                  src={noticia.ImageURL} 
                                   alt={noticia.Title}
                                   fill
                                   className="object-cover"
@@ -99,7 +121,7 @@ export default async function Home() {
                             <div className="p-5 flex flex-col">
                                 <h3 className="font-montserrat text-lg font-bold leading-snug h-20 line-clamp-3 text-brand-dark">{noticia.Title}</h3>
                                 <p className="text-sm text-brand-gray mt-4">
-                                  {new Date(noticia.Date).toLocaleDateString('pt-BR', {
+                                  {new Date(noticia.Date.seconds * 1000).toLocaleDateString('pt-BR', {
                                     day: 'numeric', month: 'long', year: 'numeric'
                                   })}
                                 </p>
