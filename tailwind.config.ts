@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'montserrat': ['Montserrat', 'sans-serif'],
-        'lato': ['Lato', 'sans-serif'],
+        'montserrat': ['var(--font-montserrat)', 'sans-serif'],
+        'lato': ['var(--font-lato)', 'sans-serif'],
       },
       colors: {
         'brand-blue': '#00529B',

@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
   return (
     <>
-
       {/* CABEÇALHO */}
       <header className="sticky top-0 z-50 shadow-md">
           {/* Background Image & Overlay */}
@@ -15,7 +14,7 @@ export default function Home() {
               <div className="flex items-center justify-between h-20">
                   {/* Logo */}
                   <a href="#" className="flex items-center space-x-3">
-                      <img src="https://i.imgur.com/rqLSX2s.png" alt="Logo Informes Brasil" className="h-16 w-auto object-contain -ml-4"/>
+                      <Image src="https://i.imgur.com/rqLSX2s.png" alt="Logo Informes Brasil" width={180} height={40} className="object-contain -ml-4" />
                   </a>
 
                   {/* Navegação Principal (Desktop) */}
@@ -66,7 +65,7 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Destaque Principal */}
                   <div className="lg:col-span-2 h-96 lg:h-[500px] relative rounded-lg overflow-hidden group shadow-lg">
-                      <img src="https://placehold.co/1200x800/00529B/FFFFFF?text=Notícia+Destaque" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Imagem de Destaque"/>
+                      <Image src="https://placehold.co/1200x800/00529B/FFFFFF?text=Notícia+Destaque" alt="Imagem de Destaque" width={1200} height={800} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute bottom-0 left-0 p-6 md:p-8">
                           <span className="bg-brand-blue text-white font-bold text-xs uppercase px-2 py-1 rounded">Economia</span>
@@ -78,7 +77,7 @@ export default function Home() {
                   {/* Destaques Secundários */}
                   <div className="flex flex-col space-y-6">
                       <div className="h-full relative rounded-lg overflow-hidden group shadow-lg">
-                           <img src="https://placehold.co/600x400/1F2937/FFFFFF?text=Cultura" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Destaque 2"/>
+                           <Image src="https://placehold.co/600x400/1F2937/FFFFFF?text=Cultura" alt="Destaque 2" width={600} height={400} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                            <div className="absolute bottom-0 left-0 p-4">
                               <span className="bg-red-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">Cultura</span>
@@ -87,7 +86,7 @@ export default function Home() {
                            <a href="#" className="absolute inset-0"></a>
                       </div>
                       <div className="h-full relative rounded-lg overflow-hidden group shadow-lg">
-                           <img src="https://placehold.co/600x400/6B7280/FFFFFF?text=Política" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Destaque 3"/>
+                           <Image src="https://placehold.co/600x400/6B7280/FFFFFF?text=Política" alt="Destaque 3" width={600} height={400} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                            <div className="absolute bottom-0 left-0 p-4">
                               <span className="bg-yellow-500 text-black font-bold text-xs uppercase px-2 py-1 rounded">Política</span>
@@ -106,7 +105,7 @@ export default function Home() {
                   {/* Card de Notícia */}
                   <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
                       <div className="relative">
-                          <img src="https://placehold.co/400x300/f0f2f5/1F2937?text=Tecnologia" className="w-full h-48 object-cover" alt="Notícia 1"/>
+                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Tecnologia" alt="Notícia 1" width={400} height={300} className="w-full h-48 object-cover" />
                           <span className="absolute top-2 right-2 bg-green-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">Tecnologia</span>
                       </div>
                       <div className="p-4">
@@ -118,7 +117,7 @@ export default function Home() {
                   {/* Card de Notícia */}
                   <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
                       <div className="relative">
-                          <img src="https://placehold.co/400x300/f0f2f5/1F2937?text=Esportes" className="w-full h-48 object-cover" alt="Notícia 2"/>
+                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Esportes" alt="Notícia 2" width={400} height={300} className="w-full h-48 object-cover" />
                           <span className="absolute top-2 right-2 bg-blue-800 text-white font-bold text-xs uppercase px-2 py-1 rounded">Esportes</span>
                       </div>
                       <div className="p-4">
@@ -130,7 +129,7 @@ export default function Home() {
                   {/* Card de Notícia */}
                   <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
                       <div className="relative">
-                          <img src="https://placehold.co/400x300/f0f2f5/1F2937?text=Saúde" className="w-full h-48 object-cover" alt="Notícia 3"/>
+                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Saúde" alt="Notícia 3" width={400} height={300} className="w-full h-48 object-cover" />
                           <span className="absolute top-2 right-2 bg-red-500 text-white font-bold text-xs uppercase px-2 py-1 rounded">Saúde</span>
                       </div>
                       <div className="p-4">
@@ -142,7 +141,7 @@ export default function Home() {
                   {/* Card de Notícia */}
                   <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
                       <div className="relative">
-                          <img src="https://placehold.co/400x300/f0f2f5/1F2937?text=Educação" className="w-full h-48 object-cover" alt="Notícia 4"/>
+                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Educação" alt="Notícia 4" width={400} height={300} className="w-full h-48 object-cover" />
                           <span className="absolute top-2 right-2 bg-purple-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">Educação</span>
                       </div>
                       <div className="p-4">
@@ -195,7 +194,6 @@ export default function Home() {
               </div>
           </div>
       </footer>
-
     </>
   );
 }
