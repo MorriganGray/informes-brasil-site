@@ -1,6 +1,16 @@
 import Image from 'next/image';
 
-export default function Home() {
+async function getNoticias() {
+  const res = await fetch('http://localhost:1337/api/noticias'); // Substitua pela URL da sua API Strapi
+  if (!res.ok) {
+    throw new Error('Falha ao buscar notícias');
+  }
+  return res.json();
+}
+
+export default async function Home() {
+  const { data: noticias } = await getNoticias();
+
   return (
     <>
       {/* CABEÇALHO */}
@@ -102,54 +112,19 @@ export default function Home() {
           <section>
               <h2 className="font-montserrat text-3xl font-extrabold border-l-4 border-brand-blue pl-4 mb-6">Últimas Notícias</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {/* Card de Notícia */}
-                  <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
-                      <div className="relative">
-                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Tecnologia" alt="Notícia 1" width={400} height={300} className="w-full h-48 object-cover" />
-                          <span className="absolute top-2 right-2 bg-green-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">Tecnologia</span>
-                      </div>
-                      <div className="p-4">
-                          <h3 className="font-montserrat text-lg font-bold h-24">Novo satélite brasileiro entra em órbita para ampliar a internet no país.</h3>
-                          <p className="text-sm text-brand-gray mt-2">Por Ana Silva - 8 de Julho, 2025</p>
-                      </div>
-                      <a href="#" className="absolute inset-0"></a>
-                  </div>
-                  {/* Card de Notícia */}
-                  <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
-                      <div className="relative">
-                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Esportes" alt="Notícia 2" width={400} height={300} className="w-full h-48 object-cover" />
-                          <span className="absolute top-2 right-2 bg-blue-800 text-white font-bold text-xs uppercase px-2 py-1 rounded">Esportes</span>
-                      </div>
-                      <div className="p-4">
-                          <h3 className="font-montserrat text-lg font-bold h-24">Rodada do Brasileirão tem clássico emocionante e mudanças na tabela.</h3>
-                          <p className="text-sm text-brand-gray mt-2">Por Carlos Pereira - 8 de Julho, 2025</p>
-                      </div>
-                      <a href="#" className="absolute inset-0"></a>
-                  </div>
-                  {/* Card de Notícia */}
-                  <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
-                      <div className="relative">
-                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Saúde" alt="Notícia 3" width={400} height={300} className="w-full h-48 object-cover" />
-                          <span className="absolute top-2 right-2 bg-red-500 text-white font-bold text-xs uppercase px-2 py-1 rounded">Saúde</span>
-                      </div>
-                      <div className="p-4">
-                          <h3 className="font-montserrat text-lg font-bold h-24">Ministério da Saúde anuncia nova campanha de vacinação contra a gripe.</h3>
-                          <p className="text-sm text-brand-gray mt-2">Por Juliana Costa - 7 de Julho, 2025</p>
-                      </div>
-                      <a href="#" className="absolute inset-0"></a>
-                  </div>
-                  {/* Card de Notícia */}
-                  <div className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
-                      <div className="relative">
-                          <Image src="https://placehold.co/400x300/f0f2f5/1F2937?text=Educação" alt="Notícia 4" width={400} height={300} className="w-full h-48 object-cover" />
-                          <span className="absolute top-2 right-2 bg-purple-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">Educação</span>
-                      </div>
-                      <div className="p-4">
-                          <h3 className="font-montserrat text-lg font-bold h-24">Resultados do ENEM são divulgados e abrem prazo para inscrições no Sisu.</h3>
-                          <p className="text-sm text-brand-gray mt-2">Por Marcos Lima - 7 de Julho, 2025</p>
-                      </div>
-                      <a href="#" className="absolute inset-0"></a>
-                  </div>
+                  {noticias.map((noticia: any) => (
+                    <div key={noticia.id} className="bg-brand-white rounded-lg overflow-hidden group transform transition-transform duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl">
+                        <div className="relative">
+                            <Image src={noticia.attributes.Image?.data?.attributes?.url || "https://placehold.co/400x300/f0f2f5/1F2937?text=Imagem+da+Notícia"} alt={noticia.attributes.Title} width={400} height={300} className="w-full h-48 object-cover" />
+                            <span className="absolute top-2 right-2 bg-green-600 text-white font-bold text-xs uppercase px-2 py-1 rounded">{noticia.attributes.Category}</span>
+                        </div>
+                        <div className="p-4">
+                            <h3 className="font-montserrat text-lg font-bold h-24">{noticia.attributes.Title}</h3>
+                            <p className="text-sm text-brand-gray mt-2">Por {noticia.attributes.Author} - {new Date(noticia.attributes.Date).toLocaleDateString('pt-BR')}</p>
+                        </div>
+                        <a href={`/noticias/${noticia.id}`} className="absolute inset-0"></a>
+                    </div>
+                  ))}
               </div>
           </section>
       </main>
