@@ -8,19 +8,17 @@ export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-brand-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
-      <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: "url('https://i.imgur.com/YXjFJnG.png')"}}></div>
-      <div className="absolute inset-0 bg-white/90 backdrop-blur-sm"></div>
-      <div className="relative container mx-auto px-4">
+    <header className="bg-brand-white sticky top-0 z-50 shadow-md">
+      <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
               <Link href="/" className="flex items-center space-x-3">
                   <Image src="https://i.imgur.com/rqLSX2s.png" alt="Logo Informes Brasil" width={200} height={50} priority className="object-contain -ml-4"/>
               </Link>
               <nav className="hidden lg:flex items-center space-x-8">
-                  <Link href="#" className="font-montserrat font-bold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Política</Link>
-                  <Link href="#" className="font-montserrat font-bold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Economia</Link>
-                  <Link href="#" className="font-montserrat font-bold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Cultura</Link>
-                  <Link href="#" className="font-montserrat font-bold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Tecnologia</Link>
+                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Política</Link>
+                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Economia</Link>
+                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Cultura</Link>
+                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Tecnologia</Link>
               </nav>
               <div className="flex items-center space-x-4">
                    <button className="text-brand-dark hover:text-brand-blue transition-colors duration-300">
@@ -37,7 +35,7 @@ export default function SiteHeader() {
           </div>
       </div>
       {/* Menu Mobile */}
-      <div className={`${isMenuOpen ? 'block' : 'hidden'} lg:hidden relative bg-brand-white/95 backdrop-blur-md`}>
+      <div className={`${isMenuOpen ? 'block' : 'hidden'} lg:hidden bg-brand-white shadow-lg`}>
           <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Política</Link>
           <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Economia</Link>
           <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Cultura</Link>
