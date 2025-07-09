@@ -67,8 +67,11 @@ function AdminPage() {
       setImageUrl('');
       setContent('');
     } catch (err) {
-      console.error(err);
-      setError('Ocorreu um erro ao publicar a notícia. Tente novamente.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setIsSubmitting(false);
     }

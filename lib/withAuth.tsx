@@ -2,10 +2,10 @@
 
 import { useAuth } from './auth';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, ComponentType } from 'react';
 
-const withAuth = (Component: any) => {
-  const Auth = (props: any) => {
+const withAuth = <P extends object>(Component: ComponentType<P>) => {
+  const Auth = (props: P) => {
     const { user } = useAuth();
     const router = useRouter();
 
