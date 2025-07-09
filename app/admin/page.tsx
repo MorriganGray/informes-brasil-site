@@ -5,6 +5,7 @@ import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import withAuth from '../../lib/withAuth';
 
 const TiptapEditor = ({ content, onChange }: { content: string, onChange: (content: string) => void }) => {
   const editor = useEditor({
@@ -30,7 +31,7 @@ const TiptapEditor = ({ content, onChange }: { content: string, onChange: (conte
 };
 
 
-export default function AdminPage() {
+function AdminPage() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -134,3 +135,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+export default withAuth(AdminPage);

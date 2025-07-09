@@ -1,5 +1,6 @@
 import { Montserrat, Lato } from 'next/font/google';
 import './globals.css';
+import { AuthProvider } from '../lib/auth';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -21,7 +22,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-br">
-      <body className={`${montserrat.variable} ${lato.variable} bg-brand-light font-lato text-brand-dark`}>{children}</body>
+      <body className={`${montserrat.variable} ${lato.variable} bg-brand-light font-lato text-brand-dark`}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

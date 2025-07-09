@@ -3,9 +3,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useAuth } from '../../lib/auth';
+import { auth } from '../../lib/firebase';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 export default function SiteHeader() {
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
 
   return (
     <header className="bg-brand-white sticky top-0 z-50 shadow-md">
@@ -24,7 +35,14 @@ export default function SiteHeader() {
                    <button className="text-brand-dark hover:text-brand-blue transition-colors duration-300">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </button>
-                  <Link href="/admin" className="hidden md:block bg-brand-blue text-white px-4 py-2 rounded-md text-sm font-bold uppercase transition-all duration-300 hover:bg-brand-blue-dark">Admin</Link>
+                  {user ? (
+                    <button onClick={handleLogout} className="hidden md:block bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold uppercase transition-all duration-300 hover:bg-red-700">Logout</button>
+                  ) : (
+                    <>
+                      <Link href="/login" className="hidden md:block bg-transparent border border-brand-blue text-brand-blue px-4 py-2 rounded-md text-sm font-bold uppercase transition-all duration-300 hover:bg-brand-blue hover:text-white">Login</Link>
+                      <Link href="/signup" className="hidden md:block bg-brand-blue text-white px-4 py-2 rounded-md text-sm font-bold uppercase transition-all duration-300 hover:bg-brand-blue-dark">Sign Up</Link>
+                    </>
+                  )}
                   {/* Botão Hamburger (Mobile) */}
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden focus:outline-none text-brand-dark">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +59,14 @@ export default function SiteHeader() {
           <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Cultura</Link>
           <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Tecnologia</Link>
           <div className="px-4 py-4 border-t border-gray-200 flex flex-col space-y-3">
-               <Link href="/admin" className="bg-brand-blue text-white px-4 py-2 rounded-md text-sm font-bold uppercase text-center transition-all duration-300 hover:bg-brand-blue-dark">Admin</Link>
+               {user ? (
+                <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold uppercase text-center transition-all duration-300 hover:bg-red-700">Logout</button>
+              ) : (
+                <>
+                  <Link href="/login" className="bg-transparent border border-brand-blue text-brand-blue px-4 py-2 rounded-md text-sm font-bold uppercase text-center transition-all duration-300 hover:bg-brand-blue hover:text-white">Login</Link>
+                  <Link href="/signup" className="bg-brand-blue text-white px-4 py-2 rounded-md text-sm font-bold uppercase text-center transition-all duration-300 hover:bg-brand-blue-dark">Sign Up</Link>
+                </>
+              )}
           </div>
       </div>
     </header>
