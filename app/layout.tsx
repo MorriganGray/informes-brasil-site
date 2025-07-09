@@ -18,7 +18,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
       </head>
-      <body className="antialiased">
+      <body className="bg-white font-lato text-brand-dark antialiased">
         {children}
       </body>
     </html>
