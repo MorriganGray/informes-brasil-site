@@ -3,11 +3,32 @@
 import { useState } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css'; // import styles
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
-// Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const TiptapEditor = ({ content, onChange }: { content: string, onChange: (content: string) => void }) => {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+    ],
+    content: content,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class: 'prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
+      },
+    },
+  });
+
+  return (
+    <div className="border rounded-lg">
+      <EditorContent editor={editor} />
+    </div>
+  );
+};
+
 
 export default function AdminPage() {
   const [title, setTitle] = useState('');
@@ -52,18 +73,6 @@ export default function AdminPage() {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-      [{size: []}],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, 
-       {'indent': '-1'}, {'indent': '+1'}],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-5xl mx-auto">
@@ -105,15 +114,7 @@ export default function AdminPage() {
           </div>
           <div className="mb-12">
             <label className="block text-gray-700 font-bold mb-2">Conteúdo da Notícia</label>
-            <div className="bg-white rounded-lg border">
-              <ReactQuill
-                theme="snow"
-                value={content}
-                onChange={setContent}
-                modules={modules}
-                className="h-96"
-              />
-            </div>
+            <TiptapEditor content={content} onChange={setContent} />
           </div>
           
           {error && <p className="text-red-600 bg-red-100 p-3 rounded-lg text-center mb-4">{error}</p>}
