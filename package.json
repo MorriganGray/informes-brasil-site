@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "@tiptap/pm": "^2.25.0",
@@ -28,6 +29,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
+    "firebase-functions": "^5.0.1",
+    "firebase-tools": "^13.13.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

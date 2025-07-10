@@ -34,7 +34,11 @@ yarn-error.log*
 .env*
 
 # vercel
-.vercel
+# .vercel - Removed as it's no longer needed
+
+# firebase
+.firebase
+firebase-debug.log*
 
 # typescript
 *.tsbuildinfo
