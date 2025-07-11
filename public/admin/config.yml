@@ -1,6 +1,12 @@
 backend:
   name: git-gateway
   branch: main # O ramo principal do seu repositório
+  display_url: https://github.com/seu-usuario/seu-repositorio # Adicione o URL do seu site
+
+media_library:
+  name: uploadcare
+  config:
+    publicKey: demopublickey # Substitua pela sua chave pública do Uploadcare
 
 media_folder: "public/images/uploads" # Onde as imagens das notícias serão guardadas
 public_folder: "/images/uploads" # Como o site irá aceder a essas imagens
