@@ -1,12 +1,25 @@
 backend:
-  name: git-gateway
-  branch: main # O ramo principal do seu repositório
-  display_url: https://github.com/seu-usuario/seu-repositorio # Adicione o URL do seu site
-
-media_library:
-  name: uploadcare
+  name: firebase
   config:
-    publicKey: demopublickey # Substitua pela sua chave pública do Uploadcare
+    apiKey: "AIzaSyCDUy9NyrdcxGff6L5He0lsFJSDJwyxM3w"
+    authDomain: "informes-brasil-news.firebaseapp.com"
+    use_json_parser: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "noticias"
+    label: "Notícias"
+    folder: "_noticias" # Este campo não é usado pelo backend do Firebase, mas é mantido por compatibilidade
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "Title", widget: "string" }
+      - { label: "Data de Publicação", name: "Date", widget: "datetime" }
+      - { label: "Categoria", name: "Category", widget: "string", required: false }
+      - { label: "Imagem de Destaque", name: "Image", widget: "image" }
+      - { label: "Corpo da Notícia", name: "body", widget: "markdown" }
 
 media_folder: "public/images/uploads" # Onde as imagens das notícias serão guardadas
 public_folder: "/images/uploads" # Como o site irá aceder a essas imagens

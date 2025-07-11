@@ -15,7 +15,7 @@ interface Noticia {
     nanoseconds: number;
   };
   Category?: string;
-  ImageURL: string;
+  Image: string;
 }
 
 // Função para buscar notícias do Firebase
@@ -68,7 +68,7 @@ export default async function Home() {
                       {noticiaDestaque && (
                         <div className="lg:col-span-2 h-[30rem] lg:h-[36rem] relative rounded-xl overflow-hidden group shadow-2xl">
                             <Image 
-                              src={noticiaDestaque.ImageURL} 
+                              src={noticiaDestaque.Image}
                               alt={noticiaDestaque.Title}
                               fill
                               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -88,7 +88,7 @@ export default async function Home() {
                         {destaquesSecundarios.map((noticia) => (
                           <div key={noticia.id} className="h-full min-h-[16rem] relative rounded-xl overflow-hidden group shadow-xl">
                               <Image 
-                                src={noticia.ImageURL} 
+                                src={noticia.Image}
                                 alt={noticia.Title}
                                 fill
                                 className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -112,7 +112,7 @@ export default async function Home() {
                         <div key={noticia.id} className="bg-brand-white rounded-xl overflow-hidden group transition-all duration-300 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-1 border-2 border-transparent hover:border-brand-blue">
                             <div className="relative h-52 w-full">
                                 <Image 
-                                  src={noticia.ImageURL} 
+                                  src={noticia.Image}
                                   alt={noticia.Title}
                                   fill
                                   className="object-cover"

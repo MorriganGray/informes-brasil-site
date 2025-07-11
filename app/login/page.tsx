@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { auth, db } from '../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -16,6 +17,15 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     try {
+      // Verificar se o e-mail está na lista de administradores
+      const adminDocRef = doc(db, 'admins', email);
+      const adminDoc = await getDoc(adminDocRef);
+
+      if (!adminDoc.exists()) {
+        setError('Acesso não autorizado. Este e-mail não tem permissão para fazer login.');
+        return;
+      }
+
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/admin');
     } catch (err) {
