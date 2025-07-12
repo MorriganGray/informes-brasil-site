@@ -92,7 +92,6 @@ export default function HomePage() {
              <div className="md:col-span-2 md:row-span-2 h-[20rem] md:h-full">
                <NoticiaCard 
                   noticia={destaquePrincipal} 
-                  // ✨ CORREÇÃO AQUI ✨
                   className="h-full"
                   titleClassName="text-3xl md:text-4xl"
                   showCategory={true}
@@ -102,10 +101,11 @@ export default function HomePage() {
           
           {/* Destaques Laterais (coluna ao lado do principal) */}
           {destaquesLaterais.map((noticia) => (
-            <div key={noticia.id} className="md:col-span-1 h-[20rem] md:h-auto">
+            // ✨ CORREÇÃO AQUI ✨
+            // Trocamos 'md:h-auto' por 'md:h-full' para que o card ocupe a altura da linha do grid.
+            <div key={noticia.id} className="md:col-span-1 h-[20rem] md:h-full">
                <NoticiaCard 
                   noticia={noticia}
-                  // ✨ CORREÇÃO AQUI ✨
                   className="h-full"
                   titleClassName="text-xl"
                />
@@ -122,7 +122,6 @@ export default function HomePage() {
                 <div key={noticia.id} className="h-[20rem]">
                     <NoticiaCard 
                         noticia={noticia}
-                        // ✨ CORREÇÃO AQUI ✨
                         className="h-full"
                         titleClassName="text-lg"
                     />
