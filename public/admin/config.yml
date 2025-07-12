@@ -14,6 +14,7 @@ collections:
     folder: "content/noticias"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: Title # <-- Adiciona esta linha
     fields:
       - { label: "Título", name: "Title", widget: "string" }
       - { label: "Data de Publicação", name: "Date", widget: "datetime" }
