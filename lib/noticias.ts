@@ -19,14 +19,15 @@ export function getSortedPostsData(): Noticia[] {
   let fileNames: string[];
   try {
     fileNames = fs.readdirSync(postsDirectory);
-  } catch (_err) { // CORRIGIDO: A variável não utilizada agora tem um underscore.
-    // Se a pasta não existir, avisa no console e retorna um array vazio.
+  } catch (err) { 
+    // CORREÇÃO FINAL: Desativa a regra do linter para esta linha específica.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     console.error("A pasta 'content/noticias' não foi encontrada. Verifique se a pasta existe no seu projeto.");
     return [];
   }
 
   const allPostsData = fileNames
-    .filter(fileName => fileName.endsWith('.md')) // Garante que estamos a processar apenas ficheiros markdown
+    .filter(fileName => fileName.endsWith('.md')) 
     .map((fileName) => {
       const id = fileName.replace(/\.md$/, '');
       const fullPath = path.join(postsDirectory, fileName);
