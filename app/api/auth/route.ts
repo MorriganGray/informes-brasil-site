@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define a interface para a resposta de token do GitHub
+interface GitHubTokenResponse {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+}
+
 const client_id = process.env.OAUTH_CLIENT_ID;
 const client_secret = process.env.OAUTH_CLIENT_SECRET;
 const redirect_uri = 'https://informesbrasil.vercel.app/api/auth'; // A nossa própria URL
@@ -32,7 +39,8 @@ async function handleCallback(code: string) {
       }),
     });
 
-    const data: any = await response.json();
+    // Usa a nova interface para tipar a resposta
+    const data: GitHubTokenResponse = await response.json();
 
     if (data.error) {
       console.error('GitHub OAuth Error:', data.error_description);
@@ -77,11 +85,9 @@ async function handleCallback(code: string) {
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
 
-  // Se não houver código, é a fase 1. Redireciona para o GitHub.
   if (!code) {
     return handleInitialAuth();
   }
   
-  // Se houver código, é a fase 2. Troca o código pelo token.
   return handleCallback(code);
 }
