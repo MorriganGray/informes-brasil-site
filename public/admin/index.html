@@ -4,12 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Conteúdo</title>
-  
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-</head>
+  </head>
 <body>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
   <script>
-    // Inicializa o CMS com a configuração diretamente aqui
     window.CMS.init({
       config: {
         backend: {
@@ -23,7 +22,7 @@
           {
             name: "noticias",
             label: "Notícias",
-            folder: "content/noticias", // As notícias serão guardadas aqui
+            folder: "content/noticias",
             create: true,
             slug: "{{year}}-{{month}}-{{day}}-{{slug}}",
             fields: [
