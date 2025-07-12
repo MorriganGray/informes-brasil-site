@@ -53,7 +53,7 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
 }
 
 
-// --- PÁGINA INICIAL COM NOVO LAYOUT HÍBRIDO (GRID + FLEXBOX) ---
+// --- PÁGINA INICIAL COM LAYOUT FLEXBOX ROBUSTO ---
 export default function HomePage() {
   const allPostsData: Noticia[] = getSortedPostsData();
 
@@ -84,15 +84,15 @@ export default function HomePage() {
           Últimas Notícias
         </h1>
 
-        {/* --- SEÇÃO PRINCIPAL COM GRID (ESTRUTURA) E FLEXBOX (CONTEÚDO) --- */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        {/* --- SEÇÃO PRINCIPAL COM FLEXBOX (ESTRUTURA MAIS ROBUSTA) --- */}
+        <section className="flex flex-col lg:flex-row gap-6 mb-12">
           
-          {/* Destaque Principal (ocupa 2 colunas do grid) */}
+          {/* Coluna da Esquerda: Destaque Principal */}
           {destaquePrincipal && (
-            <div className="lg:col-span-2 h-[500px]">
+            <div className="lg:w-2/3">
               <NoticiaCard 
                 noticia={destaquePrincipal}
-                className="h-full"
+                className="h-[500px]" // Altura fixa define a altura da linha
                 titleClassName="text-3xl md:text-4xl"
                 showCategory={true}
                 priority={true}
@@ -100,14 +100,15 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Destaques Laterais (ocupa 1 coluna do grid, com flex vertical) */}
-          <div className="flex flex-col gap-6">
+          {/* Coluna da Direita: Destaques Laterais */}
+          <div className="lg:w-1/3 flex flex-col gap-6">
             {destaquesLaterais.map((noticia) => (
               noticia && (
-                <div key={noticia.id} className="flex-1 h-full min-h-[238px]">
+                // O 'flex-1' faz com que cada card ocupe uma parte igual do espaço vertical da coluna
+                <div key={noticia.id} className="flex-1">
                   <NoticiaCard 
                     noticia={noticia}
-                    className="h-full"
+                    className="h-full" // Ocupa a altura total do seu contentor (div com flex-1)
                     titleClassName="text-xl"
                   />
                 </div>
