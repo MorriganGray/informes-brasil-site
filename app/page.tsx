@@ -1,47 +1,66 @@
-// Importações de componentes e da função de busca de dados
 import Image from 'next/image';
 import Link from 'next/link';
-import SiteHeader from './components/SiteHeader'; // Importa o novo Header
-import SiteFooter from './components/SiteFooter'; // Importa o novo Footer
-import { db } from '../lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import SiteHeader from './components/SiteHeader';
+import SiteFooter from './components/SiteFooter';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter'; // Esta biblioteca lê os metadados dos ficheiros
 
-// A interface pode ser movida para um ficheiro de tipos (e.g., types.ts) se preferir
+// Interface para a estrutura da notícia
 interface Noticia {
   id: string;
   Title: string;
-  Date: {
-    seconds: number;
-    nanoseconds: number;
-  };
+  Date: string; // A data será lida como string
   Category?: string;
   Image: string;
 }
 
-// Função para buscar notícias do Firebase
-async function getNoticiasFromFirestore(): Promise<Noticia[]> {
-  try {
-    const noticiasCol = collection(db, 'noticias');
-    const q = query(noticiasCol, orderBy('Date', 'desc'));
-    const noticiaSnapshot = await getDocs(q);
-    const noticiasList = noticiaSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Noticia[];
-    return noticiasList;
-  } catch (error) {
-    console.error("Error fetching news from Firestore: ", error);
-    return []; // Retorna um array vazio em caso de erro
+// Nova função para ler notícias dos ficheiros Markdown
+async function getNoticiasFromMarkdown(): Promise<Noticia[]> {
+  const postsDirectory = path.join(process.cwd(), 'content/noticias');
+
+  // Verifica se o diretório existe. Se não, retorna um array vazio.
+  if (!fs.existsSync(postsDirectory)) {
+    console.log("Diretório 'content/noticias' não encontrado. Nenhuma notícia será carregada.");
+    return [];
   }
+
+  const fileNames = fs.readdirSync(postsDirectory);
+
+  const allNoticiasData = fileNames.map((fileName) => {
+    // Remove ".md" do nome do ficheiro para obter o id
+    const id = fileName.replace(/\.md$/, '');
+
+    // Lê o ficheiro markdown como uma string
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+    // Usa gray-matter para analisar os metadados (frontmatter)
+    const matterResult = matter(fileContents);
+
+    // Combina os dados com o id
+    return {
+      id,
+      ...matterResult.data,
+    } as Noticia;
+  });
+
+  // Ordena as notícias por data, da mais recente para a mais antiga
+  return allNoticiasData.sort((a, b) => {
+    if (a.Date < b.Date) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
 }
 
-
-// A página principal é um Server Component assíncrono
+// A página principal continua a ser um Server Component assíncrono
 export default async function Home() {
-  // Busca os dados no servidor durante a renderização
-  const allNoticiasData = await getNoticiasFromFirestore();
+  // Busca os dados dos ficheiros Markdown
+  const allNoticiasData = await getNoticiasFromMarkdown();
 
-  // Lógica para separar as notícias em destaques
+  // A lógica para separar destaques permanece a mesma
   const noticiaDestaque = allNoticiasData.length > 0 ? allNoticiasData[0] : null;
   const destaquesSecundarios = allNoticiasData.length > 1 ? allNoticiasData.slice(1, 3) : [];
   const ultimasNoticias = allNoticiasData.length > 3 ? allNoticiasData.slice(3, 7) : [];
@@ -52,12 +71,11 @@ export default async function Home() {
 
       <main className="bg-brand-light font-lato text-brand-dark">
         <div className="container mx-auto px-4 py-12 md:py-16">
-          {/* Se não houver notícias, mostra uma mensagem amigável */}
           {allNoticiasData.length === 0 ? (
             <div className="text-center py-20">
               <h2 className="font-montserrat text-3xl font-bold mb-4">Nenhuma notícia publicada</h2>
               <p className="text-brand-gray text-lg">
-                Por que não vai até ao <Link href="/admin" className="text-brand-blue hover:underline font-semibold">painel de admin</Link> para criar a primeira?
+                Publicaste uma notícia no CMS? Faz "git pull" no teu terminal para a veres localmente, ou aguarda pelo deploy na Vercel.
               </p>
             </div>
           ) : (
@@ -121,7 +139,7 @@ export default async function Home() {
                             <div className="p-5 flex flex-col">
                                 <h3 className="font-montserrat text-lg font-bold leading-snug h-20 line-clamp-3 text-brand-dark">{noticia.Title}</h3>
                                 <p className="text-sm text-brand-gray mt-4">
-                                  {new Date(noticia.Date.seconds * 1000).toLocaleDateString('pt-BR', {
+                                  {new Date(noticia.Date).toLocaleDateString('pt-BR', {
                                     day: 'numeric', month: 'long', year: 'numeric'
                                   })}
                                 </p>

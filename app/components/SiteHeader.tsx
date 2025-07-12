@@ -8,6 +8,14 @@ import { auth } from '../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
+// Array com as categorias para facilitar a manutenção
+const categorias = [
+  { nome: 'Política', slug: 'politica' },
+  { nome: 'Economia', slug: 'economia' },
+  { nome: 'Cultura', slug: 'cultura' },
+  { nome: 'Tecnologia', slug: 'tecnologia' },
+];
+
 export default function SiteHeader() {
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,13 +31,14 @@ export default function SiteHeader() {
       <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
               <Link href="/" className="flex items-center space-x-3">
-                  <Image src="https://i.imgur.com/rqLSX2s.png" alt="Logo Informes Brasil" width={200} height={50} priority className="object-contain -ml-4"/>
+                  <Image src="/images/logo.svg" alt="Logo Informes Brasil" width={200} height={50} priority className="object-contain -ml-4"/>
               </Link>
               <nav className="hidden lg:flex items-center space-x-8">
-                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Política</Link>
-                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Economia</Link>
-                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Cultura</Link>
-                  <Link href="#" className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">Tecnologia</Link>
+                  {categorias.map((categoria) => (
+                    <Link key={categoria.slug} href={`/categoria/${categoria.slug}`} className="font-montserrat font-semibold text-sm uppercase tracking-wider transition-colors duration-300 text-brand-dark hover:text-brand-blue">
+                      {categoria.nome}
+                    </Link>
+                  ))}
               </nav>
               <div className="flex items-center space-x-4">
                    <button className="text-brand-dark hover:text-brand-blue transition-colors duration-300">
@@ -54,10 +63,11 @@ export default function SiteHeader() {
       </div>
       {/* Menu Mobile */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} lg:hidden bg-brand-white shadow-lg`}>
-          <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Política</Link>
-          <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Economia</Link>
-          <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Cultura</Link>
-          <Link href="#" className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">Tecnologia</Link>
+          {categorias.map((categoria) => (
+            <Link key={categoria.slug} href={`/categoria/${categoria.slug}`} className="block py-3 px-4 text-sm hover:bg-brand-light font-semibold">
+              {categoria.nome}
+            </Link>
+          ))}
           <div className="px-4 py-4 border-t border-gray-200 flex flex-col space-y-3">
                {user ? (
                 <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold uppercase text-center transition-all duration-300 hover:bg-red-700">Logout</button>
