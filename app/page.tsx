@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getSortedPostsData, Noticia } from '../lib/noticias';
+import React from 'react'; // Importar React para usar Fragment
 
 // --- COMPONENTE DO CARD DE NOTÍCIA (Sem alterações) ---
 interface NoticiaCardProps {
@@ -53,7 +54,7 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
 }
 
 
-// --- PÁGINA INICIAL COM LAYOUT FLEXBOX ROBUSTO ---
+// --- PÁGINA INICIAL COM LAYOUT CORRIGIDO ---
 export default function HomePage() {
   const allPostsData: Noticia[] = getSortedPostsData();
 
@@ -63,23 +64,19 @@ export default function HomePage() {
 
   if (allPostsData.length === 0) {
     return (
-      <main className="bg-gray-100 font-sans text-gray-800">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="text-center py-20">
-            <h2 className="font-serif text-3xl font-bold mb-4">Nenhuma notícia publicada</h2>
-            <p className="text-gray-600 text-lg">
-              Assim que publicar uma notícia no seu CMS, ela aparecerá aqui.
-            </p>
-          </div>
-        </div>
-      </main>
+      <div className="text-center py-20">
+        <h2 className="font-serif text-3xl font-bold mb-4">Nenhuma notícia publicada</h2>
+        <p className="text-gray-600 text-lg">
+          Assim que publicar uma notícia no seu CMS, ela aparecerá aqui.
+        </p>
+      </div>
     );
   }
 
+  // ✨ CORREÇÃO: Removida a tag <main> e o div.container redundantes.
+  // Usamos um Fragment (<>) para agrupar os elementos sem adicionar nós extras ao DOM.
   return (
-    <main className="bg-brand-light font-lato text-brand-dark">
-      <div className="container mx-auto px-4 py-8">
-        
+    <React.Fragment>
         <h1 className="text-4xl font-extrabold font-montserrat my-8 border-l-4 border-brand-blue pl-4">
           Últimas Notícias
         </h1>
@@ -138,7 +135,6 @@ export default function HomePage() {
             </div>
           </section>
         )}
-      </div>
-    </main>
+    </React.Fragment>
   );
 }
