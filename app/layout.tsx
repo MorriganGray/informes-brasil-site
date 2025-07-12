@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 // Corrigindo o caminho do ThemeProvider
-import { ThemeProvider } from "@/app/components/theme-provider"; 
+import { ThemeProvider } from "./components/theme-provider"; 
 // Corrigindo o caminho e o nome do Header
-import SiteHeader from "@/app/components/SiteHeader"; 
+import SiteHeader from "./components/SiteHeader"; 
 // Corrigindo o caminho e o nome do Footer
-import SiteFooter from "@/app/components/SiteFooter"; 
+import SiteFooter from "./components/SiteFooter"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
