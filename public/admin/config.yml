@@ -1,33 +1,17 @@
 backend:
-  name: firebase
-  config:
-    apiKey: "AIzaSyCDUy9NyrdcxGff6L5He0lsFJSDJwyxM3w"
-    authDomain: "informes-brasil-news.firebaseapp.com"
-    use_json_parser: true
+  name: github # Mude o backend para github
+  repo: morrigangray/informes-brasil-site # Substitua pelo SEU_USUARIO/NOME_DO_REPO
+  branch: main # Ou a branch que você usa como principal (ex: main ou master)
 
+# Onde os media (imagens, etc.) serão guardados no seu repositório
 media_folder: "public/images/uploads"
+# Como o site irá aceder a essas imagens
 public_folder: "/images/uploads"
-
-collections:
-  - name: "noticias"
-    label: "Notícias"
-    folder: "_noticias" # Este campo não é usado pelo backend do Firebase, mas é mantido por compatibilidade
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Título", name: "Title", widget: "string" }
-      - { label: "Data de Publicação", name: "Date", widget: "datetime" }
-      - { label: "Categoria", name: "Category", widget: "string", required: false }
-      - { label: "Imagem de Destaque", name: "Image", widget: "image" }
-      - { label: "Corpo da Notícia", name: "body", widget: "markdown" }
-
-media_folder: "public/images/uploads" # Onde as imagens das notícias serão guardadas
-public_folder: "/images/uploads" # Como o site irá aceder a essas imagens
 
 collections:
   - name: "noticias" # O nome da nossa coleção de conteúdo
     label: "Notícias" # Como aparecerá no painel
-    folder: "_noticias" # A pasta onde os ficheiros serão guardados
+    folder: "content/noticias" # A pasta onde os ficheiros das notícias serão guardados
     create: true # Permitir a criação de novas notícias
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Como o nome do ficheiro será gerado
     fields: # Os campos do nosso formulário de notícias
