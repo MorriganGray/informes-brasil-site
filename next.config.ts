@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "www.reuters.com", // <-- ADICIONE ESTA SEÇÃO
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "i.imgur.com",
         port: "",
         pathname: "/**",
