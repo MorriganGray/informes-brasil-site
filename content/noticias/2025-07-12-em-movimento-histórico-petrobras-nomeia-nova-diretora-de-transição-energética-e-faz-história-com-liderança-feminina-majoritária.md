@@ -2,7 +2,7 @@
 Title: Em Movimento Histórico, Petrobras Nomeia Nova Diretora de Transição
   Energética e Faz História com Liderança Feminina Majoritária
 Date: 2025-07-12T18:00:00.000Z
-Category: politica
+Category: Politica
 Image: https://www.reuters.com/resizer/v2/2BUJIXNVCFN6LBZQXUF7I66GPY.jpg?auth=b6067dd247577dc22e2eec3f814b52760f0b591978a7e9309a67bbb3f8a39a33&width=640&quality=80
 ---
 
