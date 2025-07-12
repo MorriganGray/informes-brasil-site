@@ -2,53 +2,29 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import { getNoticiasFromMarkdown } from '../../../lib/noticias';
 
-interface Noticia {
-  id: string;
-  Title: string;
-  Date: string;
-  Category?: string;
-  Image?: string; // Opcional
-}
-
-// Função para ler notícias
-function getNoticiasFromMarkdown(): Noticia[] {
-  const postsDirectory = path.join(process.cwd(), 'content/noticias');
-  if (!fs.existsSync(postsDirectory)) return [];
-
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allNoticiasData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.md$/, '');
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data } = matter(fileContents);
-    return {
-      id,
-      Title: data.Title,
-      Date: data.Date,
-      Category: data.Category,
-      Image: data.Image || null,
-    } as Noticia;
-  });
-  return allNoticiasData.sort((a, b) => (new Date(a.Date) < new Date(b.Date) ? 1 : -1));
-}
-
-// Gerar páginas estáticas para cada categoria
+// Esta função gera as páginas estáticas para cada categoria no momento do build
 export async function generateStaticParams() {
     const noticias = getNoticiasFromMarkdown();
-    const categorias = new Set(noticias.filter(n => n.Category).map(n => n.Category!.toLowerCase().replace(/\s+/g, '-')));
-    return Array.from(categorias).map(slug => ({ slug }));
+    const categorias = new Set(noticias.map(n => n.Category?.toLowerCase().replace(/\s+/g, '-')));
+    
+    return Array.from(categorias).map(slug => ({
+        slug: slug,
+    }));
 }
 
+// A página da categoria
 export default function CategoriaPage({ params }: { params: { slug: string } }) {
   const todasAsNoticias = getNoticiasFromMarkdown();
+
+  // Filtra as notícias para esta categoria específica
   const noticiasDaCategoria = todasAsNoticias.filter(noticia => 
     noticia.Category?.toLowerCase().replace(/\s+/g, '-') === params.slug
   );
-  const nomeDaCategoria = noticiasDaCategoria[0]?.Category || params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  
+  // Pega a categoria original (com maiúsculas) para o título da página
+  const nomeDaCategoria = noticiasDaCategoria[0]?.Category || params.slug;
 
   return (
     <>
@@ -58,6 +34,7 @@ export default function CategoriaPage({ params }: { params: { slug: string } }) 
           <h1 className="font-montserrat text-4xl font-extrabold border-l-4 border-brand-blue pl-4 mb-8">
             Categoria: {nomeDaCategoria}
           </h1>
+
           {noticiasDaCategoria.length === 0 ? (
             <p>Nenhuma notícia encontrada nesta categoria.</p>
           ) : (
@@ -65,8 +42,8 @@ export default function CategoriaPage({ params }: { params: { slug: string } }) 
               {noticiasDaCategoria.map((noticia) => (
                 <div key={noticia.id} className="bg-brand-white rounded-xl overflow-hidden group transition-all duration-300 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-1 border-2 border-transparent hover:border-brand-blue">
                   <div className="relative h-52 w-full bg-gray-200">
-                    {noticia.Image && typeof noticia.Image === 'string' ? (
-                      <Image 
+                    {noticia.Image && noticia.Image.startsWith('/') ? ( // <-- VERIFICAÇÃO ADICIONADA
+                      <Image
                         src={noticia.Image}
                         alt={noticia.Title}
                         fill
@@ -77,7 +54,9 @@ export default function CategoriaPage({ params }: { params: { slug: string } }) 
                   <div className="p-5 flex flex-col">
                     <h3 className="font-montserrat text-lg font-bold leading-snug h-20 line-clamp-3 text-brand-dark">{noticia.Title}</h3>
                     <p className="text-sm text-brand-gray mt-4">
-                      {new Date(noticia.Date).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      {new Date(noticia.Date).toLocaleDateString('pt-BR', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                      })}
                     </p>
                   </div>
                   <Link href={`/noticias/${noticia.id}`} className="absolute inset-0" aria-label={noticia.Title}></Link>

@@ -2,42 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import { getNoticiasFromMarkdown } from '../lib/noticias';
 
-interface Noticia {
-  id: string;
-  Title: string;
-  Date: string;
-  Category?: string;
-  Image?: string; // O campo da imagem agora é opcional
-}
-
-// Função para ler notícias dos ficheiros
-function getNoticiasFromMarkdown(): Noticia[] {
-  const postsDirectory = path.join(process.cwd(), 'content/noticias');
-  if (!fs.existsSync(postsDirectory)) return [];
-
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allNoticiasData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.md$/, '');
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data } = matter(fileContents);
-    return {
-      id,
-      Title: data.Title,
-      Date: data.Date,
-      Category: data.Category,
-      Image: data.Image || null, // Garante que o campo é nulo se não existir
-    } as Noticia;
-  });
-  return allNoticiasData.sort((a, b) => (new Date(a.Date) < new Date(b.Date) ? 1 : -1));
-}
-
+// A página principal continua a ser um Server Component assíncrono
 export default async function Home() {
+  // Busca os dados dos ficheiros Markdown
   const allNoticiasData = await getNoticiasFromMarkdown();
+
+  // A lógica para separar destaques permanece a mesma
   const noticiaDestaque = allNoticiasData.length > 0 ? allNoticiasData[0] : null;
   const destaquesSecundarios = allNoticiasData.length > 1 ? allNoticiasData.slice(1, 3) : [];
   const ultimasNoticias = allNoticiasData.length > 3 ? allNoticiasData.slice(3, 7) : [];
@@ -45,6 +17,7 @@ export default async function Home() {
   return (
     <>
       <SiteHeader />
+
       <main className="bg-brand-light font-lato text-brand-dark">
         <div className="container mx-auto px-4 py-12 md:py-16">
           {allNoticiasData.length === 0 ? (
@@ -58,16 +31,17 @@ export default async function Home() {
             <>
               <section className="mb-12 md:mb-16">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                      {/* Destaque Principal Dinâmico */}
                       {noticiaDestaque && (
                         <div className="lg:col-span-2 h-[30rem] lg:h-[36rem] relative rounded-xl overflow-hidden group shadow-2xl bg-gray-300">
-                            {noticiaDestaque.Image && typeof noticiaDestaque.Image === 'string' ? (
-                              <Image 
-                                src={noticiaDestaque.Image}
-                                alt={noticiaDestaque.Title}
-                                fill
-                                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-                                priority
-                              />
+                            {noticiaDestaque.Image && noticiaDestaque.Image.startsWith('/') ? (
+                                <Image
+                                    src={noticiaDestaque.Image}
+                                    alt={noticiaDestaque.Title}
+                                    fill
+                                    className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                                    priority
+                                />
                             ) : <div className="w-full h-full bg-gray-200"></div>}
                             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/70 via-brand-dark/40 to-transparent"></div>
                             <div className="absolute bottom-0 left-0 p-6 md:p-10">
@@ -77,11 +51,13 @@ export default async function Home() {
                             <Link href={`/noticias/${noticiaDestaque.id}`} className="absolute inset-0" aria-label={noticiaDestaque.Title}></Link>
                         </div>
                       )}
+
+                      {/* Destaques Secundários Dinâmicos */}
                       <div className="flex flex-col space-y-8">
                         {destaquesSecundarios.map((noticia) => (
                           <div key={noticia.id} className="h-full min-h-[16rem] relative rounded-xl overflow-hidden group shadow-xl bg-gray-300">
-                              {noticia.Image && typeof noticia.Image === 'string' ? (
-                                <Image 
+                              {noticia.Image && noticia.Image.startsWith('/') ? (
+                                <Image
                                   src={noticia.Image}
                                   alt={noticia.Title}
                                   fill
@@ -98,14 +74,16 @@ export default async function Home() {
                       </div>
                   </div>
               </section>
+
               <section className="py-12 md:py-16">
                   <h2 className="font-montserrat text-4xl font-extrabold border-l-4 border-brand-blue pl-4 mb-8">Últimas Notícias</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                      {/* Cards de Notícias Dinâmicos */}
                       {ultimasNoticias.map((noticia) => (
                         <div key={noticia.id} className="bg-brand-white rounded-xl overflow-hidden group transition-all duration-300 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-1 border-2 border-transparent hover:border-brand-blue">
                             <div className="relative h-52 w-full bg-gray-200">
-                                {noticia.Image && typeof noticia.Image === 'string' ? (
-                                  <Image 
+                                {noticia.Image && noticia.Image.startsWith('/') ? (
+                                  <Image
                                     src={noticia.Image}
                                     alt={noticia.Title}
                                     fill
@@ -130,6 +108,7 @@ export default async function Home() {
           )}
         </div>
       </main>
+
       <SiteFooter />
     </>
   );
