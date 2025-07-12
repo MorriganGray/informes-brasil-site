@@ -113,7 +113,10 @@ export default function HomePage() {
                 <NoticiaCard 
                   key={noticia.id}
                   noticia={noticia}
-                  className="h-56 md:h-full" // Ocupa a altura do container flex
+                  // ✨ CORREÇÃO AQUI ✨
+                  // Em vez de 'md:h-full', usamos 'lg:flex-1' para que os cards
+                  // dividam o espaço vertical da coluna em ecrãs grandes.
+                  className="h-56 lg:flex-1"
                   titleClassName="text-xl"
                 />
               )
