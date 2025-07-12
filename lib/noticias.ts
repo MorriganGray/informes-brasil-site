@@ -19,9 +19,8 @@ export function getSortedPostsData(): Noticia[] {
   let fileNames: string[];
   try {
     fileNames = fs.readdirSync(postsDirectory);
-  } catch (err) { 
-    // CORREÇÃO FINAL: Desativa a regra do linter para esta linha específica.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch { // CORREÇÃO DEFINITIVA: A variável 'err' foi completamente removida.
+    // Se a pasta não existir, avisa no console e retorna um array vazio.
     console.error("A pasta 'content/noticias' não foi encontrada. Verifique se a pasta existe no seu projeto.");
     return [];
   }
