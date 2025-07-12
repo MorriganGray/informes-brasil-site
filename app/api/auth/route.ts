@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define a interface para a resposta do GitHub
+interface GitHubTokenResponse {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+}
+
 const client_id = process.env.OAUTH_CLIENT_ID;
 const client_secret = process.env.OAUTH_CLIENT_SECRET;
 
@@ -24,11 +31,18 @@ export async function GET(req: NextRequest) {
       }),
     });
 
-    const data: any = await response.json();
+    // Usa a nova interface para tipar a resposta
+    const data: GitHubTokenResponse = await response.json();
 
     if (data.error) {
         return NextResponse.json({ error: data.error_description }, { status: 400 });
     }
+
+    // Passa o objeto completo para o script
+    const tokenData = JSON.stringify({
+        token: data.access_token,
+        provider: 'github'
+    });
 
     const content = `
       <!DOCTYPE html>
@@ -37,9 +51,10 @@ export async function GET(req: NextRequest) {
       <body>
         <script>
           const receiveMessage = (event) => {
+            // Verifica se a mensagem é do tipo esperado
             if (event.data === 'authorizing:github') {
               window.opener.postMessage(
-                'authorization:github:success:${JSON.stringify(data)}',
+                'authorization:github:success:${tokenData}',
                 event.origin
               );
               window.close();
