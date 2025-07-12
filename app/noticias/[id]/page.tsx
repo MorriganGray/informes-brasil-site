@@ -19,7 +19,9 @@ const lato = Lato({
   weight: ["400", "700"],
 });
 
-// NOVA FUNÇÃO: Gera os parâmetros estáticos para cada notícia
+// ===================================================================
+// ESTA É A FUNÇÃO ESSENCIAL QUE PRECISAMOS ADICIONAR
+// ===================================================================
 export async function generateStaticParams() {
   const noticiasCollection = collection(db, "noticias");
   const snapshot = await getDocs(noticiasCollection);
@@ -28,8 +30,8 @@ export async function generateStaticParams() {
   }));
   return paths;
 }
+// ===================================================================
 
-// Função para buscar os dados de uma notícia específica
 async function getNoticia(id: string) {
   const docRef = doc(db, "noticias", id);
   const docSnap = await getDoc(docRef);
@@ -37,11 +39,11 @@ async function getNoticia(id: string) {
   if (docSnap.exists()) {
     return docSnap.data();
   } else {
+    // Retorna null se a notícia não for encontrada
     return null;
   }
 }
 
-// O componente da página
 export default async function NoticiaPage({
   params,
 }: {
