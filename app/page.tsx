@@ -28,7 +28,7 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
           fill
           priority={priority}
           className={`object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 ${imageClassName}`}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 67vw, 50vw"
         />
       ) : (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -53,7 +53,7 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
 }
 
 
-// --- PÁGINA INICIAL COM LAYOUT DE TAMANHO FIXO ---
+// --- PÁGINA INICIAL COM NOVO LAYOUT HÍBRIDO (GRID + FLEXBOX) ---
 export default function HomePage() {
   const allPostsData: Noticia[] = getSortedPostsData();
 
@@ -84,13 +84,12 @@ export default function HomePage() {
           Últimas Notícias
         </h1>
 
-        {/* --- SEÇÃO PRINCIPAL COM FLEXBOX E TAMANHOS FIXOS --- */}
-        <section className="flex flex-wrap justify-center lg:justify-start gap-6 mb-12">
+        {/* --- SEÇÃO PRINCIPAL COM GRID (ESTRUTURA) E FLEXBOX (CONTEÚDO) --- */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
           
-          {/* Destaque Principal */}
+          {/* Destaque Principal (ocupa 2 colunas do grid) */}
           {destaquePrincipal && (
-            // ✨ CORREÇÃO: Tamanho maior para o destaque, mas ainda fixo.
-            <div className="w-full max-w-[540px] h-[406px] lg:max-w-none lg:w-2/3 lg:h-auto">
+            <div className="lg:col-span-2 h-[500px]">
               <NoticiaCard 
                 noticia={destaquePrincipal}
                 className="h-full"
@@ -101,12 +100,11 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Destaques Laterais */}
-          <div className="flex flex-wrap sm:flex-nowrap lg:flex-col justify-center gap-6 lg:w-1/3">
+          {/* Destaques Laterais (ocupa 1 coluna do grid, com flex vertical) */}
+          <div className="flex flex-col gap-6">
             {destaquesLaterais.map((noticia) => (
               noticia && (
-                // ✨ CORREÇÃO: Tamanho exato de 270x203px
-                <div key={noticia.id} className="w-[270px] h-[203px]">
+                <div key={noticia.id} className="flex-1 h-full min-h-[238px]">
                   <NoticiaCard 
                     noticia={noticia}
                     className="h-full"
@@ -118,18 +116,16 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* --- SEÇÃO DE OUTRAS NOTÍCIAS COM GRID DE TAMANHO FIXO --- */}
+        {/* --- SEÇÃO DE OUTRAS NOTÍCIAS COM GRID RESPONSIVO SIMPLES --- */}
         {outrasNoticias.length > 0 && (
           <section>
              <h2 className="text-3xl font-bold font-montserrat my-8 border-l-4 border-gray-300 pl-4">
                 Mais Notícias
              </h2>
-            {/* Usamos flex-wrap para criar um grid responsivo com itens de tamanho fixo */}
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {outrasNoticias.map((noticia) => (
                 noticia && (
-                  // ✨ CORREÇÃO: Tamanho exato de 270x203px
-                  <div key={noticia.id} className="w-[270px] h-[203px]">
+                  <div key={noticia.id} className="h-80">
                     <NoticiaCard 
                       noticia={noticia}
                       className="h-full"
