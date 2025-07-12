@@ -4,17 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Conteúdo</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
   <script>
+    // Inicializa o CMS com a configuração diretamente aqui
     window.CMS.init({
       config: {
         backend: {
           name: "github",
-          repo: "morrigangray/informes-brasil-site", // Confirme se o nome do repo está correto
+          repo: "morrigangray/informes-brasil-site", // Verifique se este é o nome do seu repositório
           branch: "main",
         },
         media_folder: "public/images/uploads",
@@ -23,7 +23,7 @@
           {
             name: "noticias",
             label: "Notícias",
-            folder: "content/noticias",
+            folder: "content/noticias", // As notícias serão guardadas aqui
             create: true,
             slug: "{{year}}-{{month}}-{{day}}-{{slug}}",
             fields: [
