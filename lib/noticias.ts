@@ -16,11 +16,10 @@ export interface Noticia {
 }
 
 export function getSortedPostsData(): Noticia[] {
-  // Obtenha os nomes dos ficheiros na pasta /content/noticias
   let fileNames: string[];
   try {
     fileNames = fs.readdirSync(postsDirectory);
-  } catch (err) {
+  } catch (_err) { // CORRIGIDO: A variável não utilizada agora tem um underscore.
     // Se a pasta não existir, avisa no console e retorna um array vazio.
     console.error("A pasta 'content/noticias' não foi encontrada. Verifique se a pasta existe no seu projeto.");
     return [];
@@ -36,7 +35,6 @@ export function getSortedPostsData(): Noticia[] {
       try {
         const matterResult = matter(fileContents);
 
-        // Validação para garantir que os campos essenciais existem
         if (!matterResult.data.Title || !matterResult.data.Date || !matterResult.data.Category) {
           throw new Error(`Metadados essenciais (Title, Date, Category) em falta.`);
         }
@@ -48,22 +46,18 @@ export function getSortedPostsData(): Noticia[] {
         } as Noticia;
 
       } catch (e) {
-        // Se ocorrer um erro ao processar um ficheiro, avisa no console e retorna null.
         console.error(`\x1b[31m[ERRO DE LEITURA]\x1b[0m Falha ao processar o ficheiro: ${fileName}. Verifique a formatação YAML.`);
-        // Usamos a variável 'e' para dar mais detalhes do erro, corrigindo o erro de lint.
         console.error(`   ↳ Detalhe: ${(e as Error).message}`);
         return null;
       }
     });
 
-  // Filtra quaisquer ficheiros que resultaram em 'null' e ordena por data
   return allPostsData
     .filter((post): post is Noticia => post !== null)
     .sort((a, b) => (a.Date < b.Date ? 1 : -1));
 }
 
 /**
- * NOVA FUNÇÃO
  * Filtra as notícias por uma categoria específica.
  * @param categorySlug A categoria para filtrar as notícias.
  * @returns Um array de notícias que pertencem à categoria especificada.
