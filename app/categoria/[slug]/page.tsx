@@ -1,72 +1,27 @@
-import Image from 'next/image';
+import { getPostsByCategory } from '../../../lib/noticias';
 import Link from 'next/link';
-import SiteHeader from '../../components/SiteHeader';
-import SiteFooter from '../../components/SiteFooter';
-import { getNoticiasFromMarkdown } from '../../../lib/noticias';
 
-// Esta função gera as páginas estáticas para cada categoria no momento do build
-export async function generateStaticParams() {
-    const noticias = getNoticiasFromMarkdown();
-    const categorias = new Set(noticias.map(n => n.Category?.toLowerCase().replace(/\s+/g, '-')));
-    
-    return Array.from(categorias).map(slug => ({
-        slug: slug,
-    }));
-}
-
-// A página da categoria
-export default function CategoriaPage({ params }: { params: { slug: string } }) {
-  const todasAsNoticias = getNoticiasFromMarkdown();
-
-  // Filtra as notícias para esta categoria específica
-  const noticiasDaCategoria = todasAsNoticias.filter(noticia => 
-    noticia.Category?.toLowerCase().replace(/\s+/g, '-') === params.slug
-  );
-  
-  // Pega a categoria original (com maiúsculas) para o título da página
-  const nomeDaCategoria = noticiasDaCategoria[0]?.Category || params.slug;
+export default function CategoryPage({ params }: { params: { slug: string } }) {
+  const posts = getPostsByCategory(params.slug);
 
   return (
-    <>
-      <SiteHeader />
-      <main className="bg-brand-light font-lato text-brand-dark">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <h1 className="font-montserrat text-4xl font-extrabold border-l-4 border-brand-blue pl-4 mb-8">
-            Categoria: {nomeDaCategoria}
-          </h1>
-
-          {noticiasDaCategoria.length === 0 ? (
-            <p>Nenhuma notícia encontrada nesta categoria.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {noticiasDaCategoria.map((noticia) => (
-                <div key={noticia.id} className="bg-brand-white rounded-xl overflow-hidden group transition-all duration-300 ease-in-out shadow-md hover:shadow-2xl hover:-translate-y-1 border-2 border-transparent hover:border-brand-blue">
-                  <div className="relative h-52 w-full bg-gray-200">
-                    {noticia.Image && noticia.Image.startsWith('/') ? ( // <-- VERIFICAÇÃO ADICIONADA
-                      <Image
-                        src={noticia.Image}
-                        alt={noticia.Title}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : null}
-                  </div>
-                  <div className="p-5 flex flex-col">
-                    <h3 className="font-montserrat text-lg font-bold leading-snug h-20 line-clamp-3 text-brand-dark">{noticia.Title}</h3>
-                    <p className="text-sm text-brand-gray mt-4">
-                      {new Date(noticia.Date).toLocaleDateString('pt-BR', {
-                        day: 'numeric', month: 'long', year: 'numeric'
-                      })}
-                    </p>
-                  </div>
-                  <Link href={`/noticias/${noticia.id}`} className="absolute inset-0" aria-label={noticia.Title}></Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
-      <SiteFooter />
-    </>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold my-8 capitalize">Categoria: {params.slug}</h1>
+      {posts.length > 0 ? (
+        <ul className="space-y-6">
+          {posts.map(({ id, Date: date, Title: title }) => (
+            <li key={id} className="border-b pb-4">
+              <Link href={`/noticias/${id}`} className="text-2xl font-bold text-blue-700 hover:text-blue-900 hover:underline transition-colors duration-200">
+                {title}
+              </Link>
+              <br />
+              <small className="text-gray-500 mt-1 block">{new Date(date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}</small>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-700">Nenhuma notícia encontrada nesta categoria.</p>
+      )}
+    </div>
   );
 }

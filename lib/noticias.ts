@@ -2,6 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
+// Função para remover acentos e normalizar a string
+const normalizeString = (str: string) => {
+  return str
+    .toLowerCase()
+    .normalize('NFD') // Separa os acentos dos caracteres
+    .replace(/[\u0300-\u036f]/g, ''); // Remove os acentos
+};
+
 export interface Noticia {
   id: string;
   Title: string;
@@ -10,7 +18,7 @@ export interface Noticia {
   Image?: string | null;
 }
 
-export function getNoticiasFromMarkdown(): Noticia[] {
+export function getSortedPostsData(): Noticia[] {
   const postsDirectory = path.join(process.cwd(), '_noticias');
   if (!fs.existsSync(postsDirectory)) {
     console.log("Diretório '_noticias' não encontrado.");
@@ -43,4 +51,11 @@ export function getNoticiasFromMarkdown(): Noticia[] {
   console.log('--- FIM DO DIAGNÓSTICO ---');
 
   return allNoticiasData.sort((a, b) => (new Date(a.Date) < new Date(b.Date) ? 1 : -1));
+}
+
+// CORREÇÃO APLICADA AQUI
+export function getPostsByCategory(category: string) {
+  const allPosts = getSortedPostsData();
+  // Compara as strings após normalizá-las (remover acentos e converter para minúsculas)
+  return allPosts.filter(post => post.Category && normalizeString(post.Category) === normalizeString(category));
 }
