@@ -2,6 +2,7 @@ backend:
   name: github
   repo: morrigangray/informes-brasil-site
   branch: main
+  base_url: https://decap-cms-oauth.glitch.me
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
