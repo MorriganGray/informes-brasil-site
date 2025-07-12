@@ -1,18 +1,18 @@
 backend:
   name: github
-  repo: morrigangray/informes-brasil-site # O teu repositório no GitHub
-  branch: main # O branch que estás a usar
+  repo: morrigangray/informes-brasil-site
+  branch: main
 
-media_folder: "public/images/uploads" # Onde as imagens serão guardadas no repositório
-public_folder: "/images/uploads" # O caminho público para as imagens
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 
 collections:
-  - name: "noticias" # Identificador da coleção
-    label: "Notícias" # Nome que aparece na interface do CMS
-    folder: "content/noticias" # Pasta onde os ficheiros de conteúdo serão guardados
-    create: true # Permite a criação de novos itens
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Formato do nome do ficheiro
-    fields: # Campos para cada notícia
+  - name: "noticias"
+    label: "Notícias"
+    folder: "content/noticias"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
       - { label: "Título", name: "Title", widget: "string" }
       - { label: "Data de Publicação", name: "Date", widget: "datetime" }
       - { label: "Categoria", name: "Category", widget: "string", required: false }
