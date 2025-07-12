@@ -17,6 +17,7 @@
     "@tiptap/react": "^2.25.0",
     "@tiptap/starter-kit": "^2.25.0",
     "@types/marked": "^5.0.2",
+    "@vercel/speed-insights": "^1.2.0",
     "firebase": "^11.10.0",
     "gray-matter": "^4.0.3",
     "marked": "^13.0.3",

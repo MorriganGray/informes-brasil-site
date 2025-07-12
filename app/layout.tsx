@@ -1,6 +1,7 @@
 import { Montserrat, Lato } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '../lib/auth';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-br">
       <body className={`${montserrat.variable} ${lato.variable} bg-brand-light font-lato text-brand-dark`}>
+<SpeedInsights />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
