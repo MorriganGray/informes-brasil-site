@@ -4,27 +4,31 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getSortedPostsData, Noticia } from '../lib/noticias';
 
-// Definindo os tipos para as propriedades do nosso componente
+// --- COMPONENTE DO CARD DE NOTÍCIA (Sem alterações, o problema não estava aqui) ---
 interface NoticiaCardProps {
-  noticia: Noticia | null; // A notícia pode ser do tipo Noticia ou nula
-  className?: string;      // className é opcional e do tipo string
-  imageClassName?: string; // imageClassName é opcional e do tipo string
-  titleClassName?: string; // titleClassName é opcional e do tipo string
-  showCategory?: boolean;  // showCategory é opcional e do tipo booleano
+  noticia: Noticia | null;
+  className?: string;
+  imageClassName?: string;
+  titleClassName?: string;
+  showCategory?: boolean;
+  priority?: boolean; // Nova prop para priorizar o carregamento da imagem principal
 }
 
-// Componente auxiliar para o cartão de notícia, agora com tipos explícitos
-function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassName = '', showCategory = false }: NoticiaCardProps) {
+function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassName = '', showCategory = false, priority = false }: NoticiaCardProps) {
   if (!noticia) return null;
 
   return (
     <div className={`relative group overflow-hidden rounded-lg shadow-lg bg-white ${className}`}>
+      {/* Link envolvendo tudo para melhor SEO e acessibilidade */}
+      <Link href={`/noticias/${noticia.id}`} className="absolute inset-0 z-10" aria-label={noticia.Title}></Link>
+      
       {/* Imagem de Fundo */}
       {noticia.Image ? (
         <Image
           src={noticia.Image}
           alt={noticia.Title}
           fill
+          priority={priority} // Carrega a imagem principal mais rápido
           className={`object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 ${imageClassName}`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
@@ -35,30 +39,32 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
       )}
 
       {/* Gradiente para legibilidade do texto */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
 
       {/* Conteúdo do Card */}
-      <div className="absolute bottom-0 left-0 p-4 md:p-6 w-full">
+      <div className="absolute bottom-0 left-0 p-4 md:p-6 w-full z-20">
         {showCategory && noticia.Category && (
           <span className="bg-brand-blue text-white font-semibold text-xs uppercase px-2 py-1 rounded-md mb-2 inline-block">
             {noticia.Category}
           </span>
         )}
-        <h2 className={`font-serif font-bold text-white leading-tight ${titleClassName}`} style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7)' }}>
+        <h2 className={`font-serif font-bold text-white leading-tight ${titleClassName}`} style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.8)' }}>
           {noticia.Title}
         </h2>
       </div>
-      <Link href={`/noticias/${noticia.id}`} className="absolute inset-0" aria-label={noticia.Title}></Link>
     </div>
   );
 }
+
+
+// --- NOVA ESTRUTURA DA PÁGINA INICIAL ---
 export default function HomePage() {
   const allPostsData: Noticia[] = getSortedPostsData();
 
-  // Lógica aprimorada para separar as notícias
   const destaquePrincipal = allPostsData.length > 0 ? allPostsData[0] : null;
   const destaquesLaterais = allPostsData.slice(1, 3);
-  const outrasNoticias = allPostsData.slice(3, 7);
+  // Unimos as outras notícias para um grid único e mais simples
+  const outrasNoticias = allPostsData.slice(3);
 
   // Mensagem para quando não houver notícias
   if (allPostsData.length === 0) {
@@ -81,51 +87,56 @@ export default function HomePage() {
       <div className="container mx-auto px-4 py-8">
         
         <h1 className="text-4xl font-extrabold font-montserrat my-8 border-l-4 border-brand-blue pl-4">
-          Notícias
+          Últimas Notícias
         </h1>
 
-        {/* Grid Principal */}
-        <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[40rem]">
+        {/* --- SEÇÃO PRINCIPAL COM FLEXBOX (Mais robusto) --- */}
+        <section className="flex flex-col lg:flex-row gap-6 mb-12">
           
-          {/* Destaque Principal (ocupa 2x2 do grid) */}
-          {destaquePrincipal && (
-             <div className="md:col-span-2 md:row-span-2 h-[20rem] md:h-full">
-               <NoticiaCard 
-                  noticia={destaquePrincipal} 
-                  className="h-full"
-                  titleClassName="text-3xl md:text-4xl"
-                  showCategory={true}
-               />
-             </div>
-          )}
-          
-          {/* Destaques Laterais (coluna ao lado do principal) */}
-          {destaquesLaterais.map((noticia) => (
-            // ✨ CORREÇÃO AQUI ✨
-            // Trocamos 'md:h-auto' por 'md:h-full' para que o card ocupe a altura da linha do grid.
-            <div key={noticia.id} className="md:col-span-1 h-[20rem] md:h-full">
-               <NoticiaCard 
+          {/* Coluna da Esquerda: Destaque Principal */}
+          <div className="lg:w-2/3">
+            {destaquePrincipal && (
+              <NoticiaCard 
+                noticia={destaquePrincipal}
+                className="h-80 md:h-[484px]" // Altura fixa e responsiva
+                titleClassName="text-3xl md:text-4xl"
+                showCategory={true}
+                priority={true} // Otimiza o LCP
+              />
+            )}
+          </div>
+
+          {/* Coluna da Direita: Destaques Laterais */}
+          <div className="lg:w-1/3 flex flex-col gap-6">
+            {destaquesLaterais.map((noticia) => (
+              noticia && (
+                <NoticiaCard 
+                  key={noticia.id}
                   noticia={noticia}
-                  className="h-full"
+                  className="h-56 md:h-full" // Ocupa a altura do container flex
                   titleClassName="text-xl"
-               />
-            </div>
-          ))}
+                />
+              )
+            ))}
+          </div>
+        </section>
 
-        </div>
-
-        {/* Seção de Outras Notícias (abaixo do grid principal) */}
+        {/* --- SEÇÃO DE OUTRAS NOTÍCIAS COM GRID SIMPLES --- */}
         {outrasNoticias.length > 0 && (
-          <section className="mt-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <section>
+             <h2 className="text-3xl font-bold font-montserrat my-8 border-l-4 border-gray-300 pl-4">
+                Mais Notícias
+             </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {outrasNoticias.map((noticia) => (
-                <div key={noticia.id} className="h-[20rem]">
-                    <NoticiaCard 
-                        noticia={noticia}
-                        className="h-full"
-                        titleClassName="text-lg"
-                    />
-                </div>
+                noticia && (
+                  <NoticiaCard 
+                    key={noticia.id}
+                    noticia={noticia}
+                    className="h-80" // Altura fixa para todos os cards
+                    titleClassName="text-lg"
+                  />
+                )
               ))}
             </div>
           </section>
