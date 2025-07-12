@@ -75,7 +75,7 @@ export default async function Home() {
             <div className="text-center py-20">
               <h2 className="font-montserrat text-3xl font-bold mb-4">Nenhuma notícia publicada</h2>
               <p className="text-brand-gray text-lg">
-                Publicaste uma notícia no CMS? Faz "git pull" no teu terminal para a veres localmente, ou aguarda pelo deploy na Vercel.
+                Publicaste uma notícia no CMS? Faz &quot;git pull&quot; no teu terminal para a veres localmente, ou aguarda pelo deploy na Vercel.
               </p>
             </div>
           ) : (
