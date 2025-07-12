@@ -4,14 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getSortedPostsData, Noticia } from '../lib/noticias';
 
-// --- COMPONENTE DO CARD DE NOTÍCIA (Sem alterações, o problema não estava aqui) ---
+// --- COMPONENTE DO CARD DE NOTÍCIA (Sem alterações) ---
 interface NoticiaCardProps {
   noticia: Noticia | null;
   className?: string;
   imageClassName?: string;
   titleClassName?: string;
   showCategory?: boolean;
-  priority?: boolean; // Nova prop para priorizar o carregamento da imagem principal
+  priority?: boolean;
 }
 
 function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassName = '', showCategory = false, priority = false }: NoticiaCardProps) {
@@ -19,18 +19,16 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
 
   return (
     <div className={`relative group overflow-hidden rounded-lg shadow-lg bg-white ${className}`}>
-      {/* Link envolvendo tudo para melhor SEO e acessibilidade */}
       <Link href={`/noticias/${noticia.id}`} className="absolute inset-0 z-10" aria-label={noticia.Title}></Link>
       
-      {/* Imagem de Fundo */}
       {noticia.Image ? (
         <Image
           src={noticia.Image}
           alt={noticia.Title}
           fill
-          priority={priority} // Carrega a imagem principal mais rápido
+          priority={priority}
           className={`object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 ${imageClassName}`}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 768px) 100vw, 50vw"
         />
       ) : (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -38,10 +36,8 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
         </div>
       )}
 
-      {/* Gradiente para legibilidade do texto */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
 
-      {/* Conteúdo do Card */}
       <div className="absolute bottom-0 left-0 p-4 md:p-6 w-full z-20">
         {showCategory && noticia.Category && (
           <span className="bg-brand-blue text-white font-semibold text-xs uppercase px-2 py-1 rounded-md mb-2 inline-block">
@@ -57,16 +53,14 @@ function NoticiaCard({ noticia, className = '', imageClassName = '', titleClassN
 }
 
 
-// --- NOVA ESTRUTURA DA PÁGINA INICIAL ---
+// --- PÁGINA INICIAL COM LAYOUT DE TAMANHO FIXO ---
 export default function HomePage() {
   const allPostsData: Noticia[] = getSortedPostsData();
 
   const destaquePrincipal = allPostsData.length > 0 ? allPostsData[0] : null;
   const destaquesLaterais = allPostsData.slice(1, 3);
-  // Unimos as outras notícias para um grid único e mais simples
   const outrasNoticias = allPostsData.slice(3);
 
-  // Mensagem para quando não houver notícias
   if (allPostsData.length === 0) {
     return (
       <main className="bg-gray-100 font-sans text-gray-800">
@@ -90,55 +84,58 @@ export default function HomePage() {
           Últimas Notícias
         </h1>
 
-        {/* --- SEÇÃO PRINCIPAL COM FLEXBOX (Mais robusto) --- */}
-        <section className="flex flex-col lg:flex-row gap-6 mb-12">
+        {/* --- SEÇÃO PRINCIPAL COM FLEXBOX E TAMANHOS FIXOS --- */}
+        <section className="flex flex-wrap justify-center lg:justify-start gap-6 mb-12">
           
-          {/* Coluna da Esquerda: Destaque Principal */}
-          <div className="lg:w-2/3">
-            {destaquePrincipal && (
+          {/* Destaque Principal */}
+          {destaquePrincipal && (
+            // ✨ CORREÇÃO: Tamanho maior para o destaque, mas ainda fixo.
+            <div className="w-full max-w-[540px] h-[406px] lg:max-w-none lg:w-2/3 lg:h-auto">
               <NoticiaCard 
                 noticia={destaquePrincipal}
-                className="h-80 md:h-[484px]" // Altura fixa e responsiva
+                className="h-full"
                 titleClassName="text-3xl md:text-4xl"
                 showCategory={true}
-                priority={true} // Otimiza o LCP
+                priority={true}
               />
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Coluna da Direita: Destaques Laterais */}
-          <div className="lg:w-1/3 flex flex-col gap-6">
+          {/* Destaques Laterais */}
+          <div className="flex flex-wrap sm:flex-nowrap lg:flex-col justify-center gap-6 lg:w-1/3">
             {destaquesLaterais.map((noticia) => (
               noticia && (
-                <NoticiaCard 
-                  key={noticia.id}
-                  noticia={noticia}
-                  // ✨ CORREÇÃO AQUI ✨
-                  // Em vez de 'md:h-full', usamos 'lg:flex-1' para que os cards
-                  // dividam o espaço vertical da coluna em ecrãs grandes.
-                  className="h-56 lg:flex-1"
-                  titleClassName="text-xl"
-                />
+                // ✨ CORREÇÃO: Tamanho exato de 270x203px
+                <div key={noticia.id} className="w-[270px] h-[203px]">
+                  <NoticiaCard 
+                    noticia={noticia}
+                    className="h-full"
+                    titleClassName="text-xl"
+                  />
+                </div>
               )
             ))}
           </div>
         </section>
 
-        {/* --- SEÇÃO DE OUTRAS NOTÍCIAS COM GRID SIMPLES --- */}
+        {/* --- SEÇÃO DE OUTRAS NOTÍCIAS COM GRID DE TAMANHO FIXO --- */}
         {outrasNoticias.length > 0 && (
           <section>
              <h2 className="text-3xl font-bold font-montserrat my-8 border-l-4 border-gray-300 pl-4">
                 Mais Notícias
              </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Usamos flex-wrap para criar um grid responsivo com itens de tamanho fixo */}
+            <div className="flex flex-wrap justify-center gap-6">
               {outrasNoticias.map((noticia) => (
                 noticia && (
-                  <NoticiaCard 
-                    key={noticia.id}
-                    noticia={noticia}
-                    className="h-80" // Altura fixa para todos os cards
-                    titleClassName="text-lg"
-                  />
+                  // ✨ CORREÇÃO: Tamanho exato de 270x203px
+                  <div key={noticia.id} className="w-[270px] h-[203px]">
+                    <NoticiaCard 
+                      noticia={noticia}
+                      className="h-full"
+                      titleClassName="text-lg"
+                    />
+                  </div>
                 )
               ))}
             </div>
